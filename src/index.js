@@ -1,9 +1,14 @@
+import App from './compnents/App';
+import { provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import React from 'react';
 import { createStore } from 'redux';
 
-const defaultState = { checked: false };
+const defaultState = { 
+appName: 'conduit',
+articles: null
+};
 const reducer = function(state = defaultState, action) {
   switch (action.type) {
     case 'TOGGLE':
@@ -42,5 +47,7 @@ class App extends React.Component {
 }
 
 ReactDOM.render((
+  <Provider store={store}>
   <App />
+  </Provider>
 ), document.getElementById('root'));
