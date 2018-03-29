@@ -1,20 +1,46 @@
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import React from 'react';
-import { store, history} from './store';
+import { createStore } from 'redux';
 
-import { Route, Switch } from 'react-router-dom';
-import { ConnectedRouter } from 'react-router-redux';
+const defaultState = { checked: false };
+const reducer = function(state = defaultState, action) {
+  switch (action.type) {
+    case 'TOGGLE':
+    return { ...state, checked: !state.checked };
+  }
+  return state;
+};
+const store = createStore(reducer);
 
-import App from './components/App';
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {};
+  }
+
+  componentWillMount() {
+    store.subscribe(() => this.setState(store.getState()));
+  }
+
+  render() {
+    const onClick = () => store.dispatch({ type: 'TOGGLE' });
+    return (
+      <div>
+        <h1>To-dos</h1>
+        <div>
+          Learn Redux&nbsp;
+          <input type="checkbox" checked={!!this.state.checked} onClick={onClick} />
+        </div>
+        {
+          this.state.checked ? (<h2>Done!</h2>) : null
+        }  
+      </div>
+
+    );
+  }
+}
 
 ReactDOM.render((
-  <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <Switch>
-        <Route path="/" component={App} />
-      </Switch>
-    </ConnectedRouter>
-  </Provider>
-
+  <App />
 ), document.getElementById('root'));
